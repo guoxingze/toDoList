@@ -42,11 +42,11 @@
         android:layout_weight="15"
         android:background="#2F4F4F"
         android:orientation="horizontal">
-        <ListView
-            android:id="@+id/main_listview"
+        <ExpandableListView
+            android:id="@+id/main_exlistview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+             android:drawSelectorOnTop="false"/>
 
     </LinearLayout>
     
