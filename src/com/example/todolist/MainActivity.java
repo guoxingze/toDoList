@@ -2,9 +2,12 @@ package com.example.todolist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -22,13 +25,35 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//initial Database
+		projectDB testDB = new projectDB(this);
+		
+		
 		setContentView(R.layout.activity_main);
+		Intent returnValue =getIntent();
+		ArrayList<HashMap<String,Object>> addedData = (ArrayList<HashMap<String,Object>>)returnValue.getSerializableExtra("newData");
 		
 		//Assign listview
 		ExpandableListView list =(ExpandableListView) findViewById(R.id.main_exlistview);
 		Button newButton = (Button) findViewById(R.id.button1);
 		final main_listAdapter listAdapter = this.listviewSetUp();
 		list.setAdapter(listAdapter);
+		
+		//test intent
+		if(addedData!=null){
+			   	 HashMap<String,Object> testNewMap = new HashMap<String,Object>();
+			   	 testNewMap.put("gCheck", true);
+			   	 testNewMap.put("gContent", "test");
+				listAdapter.addItem(testNewMap, addedData);
+		}
+		else {
+			System.out.println("This is main");
+			printData(testDB);
+			System.out.println("main over");
+		}
+		
+		
+		//test finished
 //		list.expandGroup(0);   //test expand
 		
 		//set listener
@@ -49,28 +74,10 @@ public class MainActivity extends Activity {
 		//button
 		newButton.setOnClickListener(new View.OnClickListener() {
              public void onClick(View v) {
-            	 Toast.makeText(MainActivity.this, "test",Toast.LENGTH_SHORT).show();
-            	 //test group
-            	 HashMap<String,Object> testNewMap = new HashMap<String,Object>();
-            	 testNewMap.put("PDone", true);
-            	 testNewMap.put("PContent", "test");
-            	 
-            	 //test child
-            	 ArrayList<HashMap<String,Object>> testNewChild = new ArrayList<HashMap<String,Object>>();
-     			for(int j =0; j<3;j++){
- 				HashMap<String,Object> nchildMap = new HashMap<String,Object>();
- 				if(j%2==0)
- 					nchildMap.put("CDone", true);
- 				else
- 					nchildMap.put("CDone", false);
- 				
- 				nchildMap.put("CContent", "testChild");
- 				
- 				testNewChild.add(nchildMap);	
- 			}
-            	 
-     			listAdapter.addItem(testNewMap,testNewChild);
-     			listAdapter.notifyDataSetChanged();
+            	 //generate a intent
+            	 Intent addIntent = new Intent();
+            	 addIntent.setClass(MainActivity.this, AddActivity.class);
+            	 MainActivity.this.startActivity(addIntent);
              }
          });
 		
@@ -88,34 +95,34 @@ public class MainActivity extends Activity {
 	 */
 	public main_listAdapter listviewSetUp(){
 		ArrayList<HashMap<String,Object>> listItem = new ArrayList<HashMap<String,Object>>();
-		for(int i = 0;i<3;i++){
-			HashMap<String,Object> map = new HashMap<String,Object>();
-			if(i%2==0)
-				map.put("PDone", true);
-			else
-				map.put("PDone", false);
-			
-			map.put("PContent", "This is" + i);
-			
-			listItem.add(map);	
-		}
+//		for(int i = 0;i<3;i++){
+//			HashMap<String,Object> map = new HashMap<String,Object>();
+//			if(i%2==0)
+//				map.put("gCheck", true);
+//			else
+//				map.put("gCheck", false);
+//			
+//			map.put("gContent", "This is" + i);
+//			
+//			listItem.add(map);	
+//		}
 		//Child
 		ArrayList<ArrayList<HashMap<String,Object>>> childs = new ArrayList<ArrayList<HashMap<String,Object>>>();
-		for(int i =0;i<3;i++){
-			ArrayList<HashMap<String,Object>> subCHild = new ArrayList<HashMap<String,Object>>();
+//		for(int i =0;i<3;i++){
+//			ArrayList<HashMap<String,Object>> subCHild = new ArrayList<HashMap<String,Object>>();
 //			for(int j =0; j<3;j++){
 //				HashMap<String,Object> childMap = new HashMap<String,Object>();
 //				if(j%2==0)
-//					childMap.put("CDone", true);
+//					childMap.put("cCheck", true);
 //				else
-//					childMap.put("CDone", false);
+//					childMap.put("cCheck", false);
 //				
-//				childMap.put("CContent", "This is" + j);
+//				childMap.put("cContent", "This is" + j);
 //				
 //				subCHild.add(childMap);	
 //			}
-			childs.add(subCHild);
-		}
+//			childs.add(subCHild);
+//		}
 		
 //		 /**
 //         * 使用SimpleExpandableListAdapter显示ExpandableListView
@@ -136,23 +143,55 @@ public class MainActivity extends Activity {
 		main_listAdapter  listItemAdapter = new main_listAdapter(this,
 				listItem,
 				R.layout.parentlistview_main,
-				new String[]{"PDone","PContent"}, 
+				new String[]{"gCheck","gContent"}, 
 				new int[]{R.id.parentListView_checkbox_main,R.id.parentListView_textview_main},
 				childs,
 				R.layout.childlistview_main,
-				new String[]{"CDone","CContent"},
+				new String[]{"cCheck","cContent"},
 				new int[]{R.id.childListView_checkbox_main,R.id.childListView_textview_main});
 		
-//		SimpleExpandableListAdapter  listItemAdapter = new SimpleExpandableListAdapter(this,
-//				listItem,
-//				R.layout.parentlistview_main,
-//				new String[]{"PContent"}, 
-//				new int[]{R.id.parentListView_textview_main},
-//				childs,
-//				R.layout.childlistview_main,
-//				new String[]{"CContent","CDone"},
-//				new int[]{R.id.childListView_textview_main,R.id.childListView_checkbox_main});
 		return listItemAdapter;
 	}
 	
+	public void testAddButton(){
+   	 Toast.makeText(MainActivity.this, "test",Toast.LENGTH_SHORT).show();
+   	 //test group
+   	 HashMap<String,Object> testNewMap = new HashMap<String,Object>();
+   	 testNewMap.put("gCheck", true);
+   	 testNewMap.put("gContent", "test");
+   	 
+   	 //test child
+   	 ArrayList<HashMap<String,Object>> testNewChild = new ArrayList<HashMap<String,Object>>();
+		for(int j =0; j<3;j++){
+		HashMap<String,Object> nchildMap = new HashMap<String,Object>();
+		if(j%2==0)
+			nchildMap.put("cCheck", true);
+		else
+			nchildMap.put("cCheck", false);
+		
+		nchildMap.put("cContent", "testChild");
+		
+		testNewChild.add(nchildMap);	
+	}
+   	 
+//		listAdapter.addItem(testNewMap,testNewChild);
+//		listAdapter.notifyDataSetChanged();
+	}
+	
+	public void interToDB( HashMap<String,Object> group, ArrayList<HashMap<String,Object>> child){
+		
+	}
+	
+	//////////////
+	public void printData(projectDB testDB){
+		Cursor cursor = testDB.select(); 
+        if(cursor.moveToFirst()){  
+            System.out.println("The List In DB:"+cursor.getCount());  
+            do{  
+                System.out.println(cursor.getString(0)+cursor.getString(1)+cursor.getString(2));                  
+            }while(cursor.moveToNext());  
+        }  
+        cursor.close();
+		
+	}
 }

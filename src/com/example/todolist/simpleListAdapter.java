@@ -396,4 +396,7 @@ public class simpleListAdapter extends BaseAdapter implements Filterable {
 		mData.add(newData);
 	}
 	
+	public List<HashMap<String,Object>> getConponent(){
+		return mData;
+	}
 }
