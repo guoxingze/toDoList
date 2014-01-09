@@ -17,7 +17,8 @@ public class projectDB extends SQLiteOpenHelper{
     public final static String LIST_ID = "list_id";  
     public final static String LIST_CHECK = "list_check";  
     public final static String LIST_PARENT = "list_parent";  
-    public final static String LIST_CONTENT = "list_content";  
+    public final static String LIST_CONTENT = "list_content"; 
+    public final static String LIST_TIME = "list_time";  
     
  
     
@@ -33,6 +34,7 @@ public class projectDB extends SQLiteOpenHelper{
 		String sql = "CREATE TABLE "+TABLE_NAME+" ("
 				+LIST_PARENT +" TEXT, "
 				+LIST_CHECK +" TEXT, "
+				+LIST_TIME +" TEXT, "
 				+LIST_CONTENT+ " TEXT);";
 //		String sql = "CREATE TABLE "+DATABASE_NAME+" ( "+LIST_PARENT +" TEXT, "+ LIST_CHECK +" TEXT );";
 				db.execSQL(sql);
@@ -146,5 +148,24 @@ public class projectDB extends SQLiteOpenHelper{
         childIn.put(LIST_PARENT, parent);  
         db.insert(TABLE_NAME, null, childIn);  
         db.close();
+    }
+    
+    public void insertTime(String time){
+       	SQLiteDatabase db = this.getWritableDatabase();
+    	ContentValues timeIn = new ContentValues();
+    	timeIn.put(LIST_TIME, time);
+        db.insert(TABLE_NAME, null, timeIn);  
+        db.close();
+    }
+    
+    public void sortTime(){
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	Cursor DBcursor = db.rawQuery("Select LIST_TIME from list_table order by date(LIST_TIME) desc, time(LIST_TIME) desc",null);
+    	while(DBcursor.moveToNext()){	
+    		String gP = DBcursor.getString(0);		
+    		HashMap<String,Object> eachChild = new HashMap<String,Object>();
+    		System.out.println(gP);
+
+    	}
     }
     }

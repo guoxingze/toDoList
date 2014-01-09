@@ -36,10 +36,24 @@ public class DBtest extends Activity{
 			testNewChild.add(nchildMap);
 		
 	}
-			testDB.insert(testNewMap, testNewChild);
-			printData(testDB);
-			testDB.readParent();
-			
+//			testDB.insert(testNewMap, testNewChild);
+//			printData(testDB);
+//			testDB.readParent();
+			String t1 = "2010-01-20 20:20:20";
+			String t2 = "2011-01-20 20:20:20";
+			String t3 = "2011-02-20 20:20:20";
+			String t4 = "2011-02-26 20:20:20";
+			String t5 = "2011-02-26 21:20:20";
+			String t6 = "2011-02-26 21:21:20";
+			String t7 = "2011-02-26 21:21:21";
+			testDB.insertTime(t3);
+			testDB.insertTime(t1);
+			testDB.insertTime(t5);
+			testDB.insertTime(t4);
+			testDB.insertTime(t2);
+			testDB.insertTime(t7);
+			testDB.insertTime(t6);
+			testDB.sortTime();
 	}
 	
 	public void printData(projectDB testDB){

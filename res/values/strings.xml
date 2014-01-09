@@ -8,6 +8,7 @@
     <string name="addButton">Click to Add Sublist</string>
     <string name="addText">Click To Input </string>
     <string name="Done">Done</string>
+    <string name="addTime">Click to select Deadline</string>
 
 
 </resources>

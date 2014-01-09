@@ -11,6 +11,14 @@
         android:inputType="text"
         android:hint="@string/addText"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        <EditText
+        android:id="@+id/add_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/addText"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
         android:id="@+id/add_listview"
