@@ -38,6 +38,8 @@ public class DBtest extends Activity{
 	}
 			testDB.insert(testNewMap, testNewChild);
 			printData(testDB);
+			testDB.readParent();
+			
 	}
 	
 	public void printData(projectDB testDB){

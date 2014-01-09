@@ -99,4 +99,52 @@ public class projectDB extends SQLiteOpenHelper{
         this.getWritableDatabase().close();
     }
 	
-}
+    //read parent
+    public ArrayList<HashMap<String,Object>> readParent(){
+    	ArrayList<HashMap<String,Object>> parent = new ArrayList<HashMap<String,Object>>();
+    	Cursor DBcursor = this.getWritableDatabase().rawQuery("Select List_PARENT,List_CHECK,LIST_CONTENT from list_table WHERE List_PARENT='null'",null);
+//    	Cursor DBcursor = this.getWritableDatabase().query("list_table", new String[]{"LIST_CHECK,LIST_CONTENT"}, "LIST_PARENT LIKE", new String[]{"null"}, null, null, null);
+    	while(DBcursor.moveToNext()){	
+    		String gP = DBcursor.getString(0);	
+    		String gCheck = DBcursor.getString(1);	
+    		String gContent = DBcursor.getString(2);	
+    		HashMap<String,Object> eachParent = new HashMap<String,Object>();
+    		eachParent.put("gCheck", Boolean.valueOf(gCheck));
+    		eachParent.put("gContent", gContent);
+    		parent.add(eachParent);
+
+    	}
+    	DBcursor.close(); 
+    	this.getWritableDatabase().close();
+    	return parent;  	
+    }
+    public ArrayList<HashMap<String,Object>> readChild(String parent){
+    	ArrayList<HashMap<String,Object>> childs = new ArrayList<HashMap<String,Object>>();
+    	Cursor DBcursor = this.getWritableDatabase().rawQuery("Select List_PARENT,List_CHECK,LIST_CONTENT from list_table WHERE List_PARENT='" + parent + "'",null);
+    	while(DBcursor.moveToNext()){	
+    		String gP = DBcursor.getString(0);	
+    		String cCheck = DBcursor.getString(1);	
+    		String cContent = DBcursor.getString(2);	
+    		HashMap<String,Object> eachChild = new HashMap<String,Object>();
+    		eachChild.put("cCheck", Boolean.valueOf(cCheck));
+    		eachChild.put("cContent", cContent);
+    		childs.add(eachChild);
+
+    	}	
+    	return childs;
+    	
+    }
+    
+    public void insertChild(HashMap<String,Object> newChild, String parent){
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	String childContent = (String) newChild.get("cContent");
+        String childtCheck = String.valueOf(newChild.get("cCheck"));
+        ContentValues childIn = new ContentValues();
+        
+        childIn.put(LIST_CONTENT, childContent);
+        childIn.put(LIST_CHECK, childtCheck);  
+        childIn.put(LIST_PARENT, parent);  
+        db.insert(TABLE_NAME, null, childIn);  
+        db.close();
+    }
+    }
