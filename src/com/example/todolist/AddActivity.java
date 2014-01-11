@@ -44,6 +44,9 @@ public class AddActivity extends Activity {
 	private AlertDialog mPop;
 	private String userInput = "";
 	private Calendar c = Calendar.getInstance();
+	private String deadline;
+	private TextView addText;
+	private TextView addTime;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +58,12 @@ public class AddActivity extends Activity {
 		
 		System.out.println("add active");
 		
-		final TextView addText = (TextView) findViewById(R.id.add_testview);
-		final TextView addTime = (TextView) findViewById(R.id.add_time);
+		addText = (TextView) findViewById(R.id.add_testview);
+		addTime = (TextView) findViewById(R.id.add_time);
 		ListView addList = (ListView) findViewById(R.id.add_listview);
 		Button addButton = (Button) findViewById(R.id.add_button);
 		Button doneButton = (Button) findViewById(R.id.done_button);
+		
 		
 //		ListView Adapter
 		//final simpleListAdapter thisAdapter =initializeListAdapter();
@@ -70,7 +74,7 @@ public class AddActivity extends Activity {
 		addTime.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
             	//test popup 
-            	timeShow();
+            	dateShow();
             }
 			
 		});
@@ -177,20 +181,27 @@ public class AddActivity extends Activity {
 	}
 	
 	
-	public void timeShow(){
-		c.setTimeInMillis(System.currentTimeMillis());
-        int mHour = c.get(Calendar.HOUR_OF_DAY);
-        int mMinute = c.get(Calendar.MINUTE);
+	public void timeShow(){ 
+		Calendar tempC = Calendar.getInstance();
+		tempC.setTimeInMillis(System.currentTimeMillis());
+        int mHour = tempC.get(Calendar.HOUR_OF_DAY);
+        int mMinute = tempC.get(Calendar.MINUTE);
         new myTimePicker(this,new TimePickerDialog.OnTimeSetListener() {
 
 			@Override
 			public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-				dateShow();
+//				dateShow();
 //                c.setTimeInMillis(System.currentTimeMillis());
-//                c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//                c.set(Calendar.MINUTE, minute);
-//                c.set(Calendar.SECOND, 0); // 设为 0
-//                c.set(Calendar.MILLISECOND, 0); // 设为 0
+                c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                c.set(Calendar.MINUTE, minute);
+                c.set(Calendar.SECOND, 0); 
+//                c.set(Calendar.MILLISECOND, 0);
+                
+				SimpleDateFormat s= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				deadline = s.format(c.getTime());
+				addTime.setText(deadline.toString());
+				System.out.println(deadline);
+				
 				
 				
 			}
@@ -199,18 +210,21 @@ public class AddActivity extends Activity {
 	}
 	
 	public void dateShow(){
-		c.setTimeInMillis(System.currentTimeMillis());
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
+		Calendar tempC = Calendar.getInstance();
+		tempC.setTimeInMillis(System.currentTimeMillis());
+        int mYear = tempC.get(Calendar.YEAR);
+        int mMonth = tempC.get(Calendar.MONTH);
+        int mDay = tempC.get(Calendar.DAY_OF_MONTH);
 		new myDatePicker(this,new DatePickerDialog.OnDateSetListener(){
 
 			@Override
-			public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
+			public void onDateSet(DatePicker arg0, int y, int m, int d) {
 			//	System.out.println(c.getTime().toString());
-				SimpleDateFormat s= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String dateTest = s.format(c.getTime());
-				System.out.println(dateTest);
+                c.set(Calendar.YEAR, y);
+                c.set(Calendar.MONTH, m);
+                c.set(Calendar.DAY_OF_MONTH, d);
+                timeShow();
+
 			}
 		}, mYear,mMonth,mDay).show();
 	}
